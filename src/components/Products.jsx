@@ -1,7 +1,9 @@
 import { moneyFormat } from "../helpers";
+import useCoffe from "../hooks/useCoffe";
 
 export default function Products({ product }) {
   const { nombre, imagen, precio } = product;
+  const {handleClickModal, handleSetProducto} = useCoffe()
 
   return (
     <div className="border p-2 shadow bg-white">
@@ -16,6 +18,10 @@ export default function Products({ product }) {
         <p className="mt-5 font-black text-3xl text-gray-700">{moneyFormat(precio)}</p>
       <button
         type="button"
+        onClick={()=>{
+          handleSetProducto(product)
+          handleClickModal()
+        }}
         className="bg-indigo-600 hover:bg-indigo-800 text-white w-full mt-5 p-3 uppercase font-bold"
       >Agregar</button>
       </div>
