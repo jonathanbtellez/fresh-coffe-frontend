@@ -1,8 +1,12 @@
+import { moneyFormat } from "../helpers"
 import useCoffe from "../hooks/useCoffe"
 import SumaryOrder from "./SumaryOrder"
 
 export default function Summary() {
-  const {order} = useCoffe()
+  const {order, total} = useCoffe()
+
+  const checkOrder = () => order.length === 0
+  console.log(checkOrder());
   return (
     <aside className="md:w-72 h-screen overflow-y-scroll p-5">
       <h1 className="text-3xl font-black">Mi pedido</h1>
@@ -17,13 +21,14 @@ export default function Summary() {
         )}
       </div>
       <p className="text-xl mt-10">
-        Total: {''}
+        Total: {moneyFormat(total)}
       </p>
 
       <form className="w-full">
         <div className="mt-5">
           <input type="submit" 
-            className="bg-indigo-600 hover:bg-indigo-800 px-5 py-2 rounded uppercase font-bold cursor-pointer text-white text-center w-full"
+            disabled={checkOrder()}
+            className={`${checkOrder() ?"bg-slate-300 ":"bg-indigo-600 hover:bg-indigo-800"} px-5 py-2 rounded uppercase font-bold cursor-pointer text-white text-center w-full`}
             value='Confirmar pedido'
           />
         </div>

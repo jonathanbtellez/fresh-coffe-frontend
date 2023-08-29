@@ -1,10 +1,21 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import useCoffe from "../hooks/useCoffe";
 import { moneyFormat } from "../helpers";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function ModalProduct() {
-  const { handleClickModal, product, handleAddOrder } = useCoffe();
+  const { handleClickModal, product, handleAddOrder, order } = useCoffe();
   const [quantity, setQuantity] = useState(1);
+  const [updateOrder, setUpdateOrder] = useState(false)
+
+  useEffect(() => {
+    if (order.some((o) => o.id === product.id)) {
+      const newOrder = order.filter(
+        (o) => o.id === product.id)[0]
+      setQuantity(newOrder.quantity)
+      setUpdateOrder(true)
+    }
+  }, [order]);
 
   return (
     <>
@@ -89,11 +100,11 @@ export default function ModalProduct() {
           <button
             className="bg-indigo-600 hover:bg-indigo-800 px-5 py-2 mt-5 font-bold text-white uppercase rounded"
             onClick={() => {
-              handleAddOrder({ ...product, quantity })
-              handleClickModal()
+              handleAddOrder({ ...product, quantity });
+              handleClickModal();
             }}
           >
-            Anadir al pedido
+            {updateOrder ? "Guardar cambios" : "Añadir al pedido"}
           </button>
         </div>
       </div>
