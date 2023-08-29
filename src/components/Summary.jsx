@@ -6,7 +6,6 @@ export default function Summary() {
   const {order, total} = useCoffe()
 
   const checkOrder = () => order.length === 0
-  console.log(checkOrder());
   return (
     <aside className="md:w-72 h-screen overflow-y-scroll p-5">
       <h1 className="text-3xl font-black">Mi pedido</h1>

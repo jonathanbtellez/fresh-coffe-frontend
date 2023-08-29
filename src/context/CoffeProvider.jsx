@@ -2,13 +2,15 @@ import { createContext, useState, useEffect } from "react";
 
 import { toast } from "react-toastify";
 
-import { categorias } from "../data/categories";
+import {categorias} from '../data/categories'
+
+import clientAxios from "../config/axios";
 
 const CoffeContext = createContext();
 
 const CoffeProvider = ({ children }) => {
-  const [categories] = useState(categorias);
-  const [currentCategory, setCurrentCategory] = useState(categorias[0]);
+  const [categories, setCategories] = useState([]);
+  const [currentCategory, setCurrentCategory] = useState({});
   const [modal, setModal] = useState(false);
   const [product, setProduct] = useState({});
   const [order, setOrder] = useState([]);
@@ -18,6 +20,21 @@ const CoffeProvider = ({ children }) => {
     const updatedTotal = order.reduce((total, product)=>(product.precio * product.quantity)+total, 0)
     setTotal(updatedTotal)
   }, [order])
+
+  const getCategories = async ()=> {
+    try {
+      console.log(import.meta.env.VITE_API_URL);
+      const {data} = (await clientAxios.get(`/api/categories`)).data
+      setCategories(data);
+      setCurrentCategory(data[0])
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  useEffect(()=>{
+    getCategories()
+  },[])
 
   const handleClickCategory = (id) => {
     const category = categorias.filter((category) => category.id === id)[0];
