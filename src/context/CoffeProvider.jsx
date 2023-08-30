@@ -23,7 +23,6 @@ const CoffeProvider = ({ children }) => {
 
   const getCategories = async ()=> {
     try {
-      console.log(import.meta.env.VITE_API_URL);
       const {data} = (await clientAxios.get(`/api/categories`)).data
       setCategories(data);
       setCurrentCategory(data[0])
