@@ -1,6 +1,5 @@
 import { createRef, useState } from "react";
 import { Link } from "react-router-dom";
-import clientAxios from "../../config/axios";
 
 import Alert from "../../components/Alert";
 import { useAuth } from "../../hooks/useAuth";

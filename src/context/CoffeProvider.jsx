@@ -2,7 +2,7 @@ import { createContext, useState, useEffect } from "react";
 
 import { toast } from "react-toastify";
 
-import {categorias} from '../data/categories'
+import { categorias } from "../data/categories";
 
 import clientAxios from "../config/axios";
 
@@ -14,26 +14,29 @@ const CoffeProvider = ({ children }) => {
   const [modal, setModal] = useState(false);
   const [product, setProduct] = useState({});
   const [order, setOrder] = useState([]);
-  const [total, setTotal] = useState(0)
+  const [total, setTotal] = useState(0);
 
-  useEffect(()=>{
-    const updatedTotal = order.reduce((total, product)=>(product.precio * product.quantity)+total, 0)
-    setTotal(updatedTotal)
-  }, [order])
+  useEffect(() => {
+    const updatedTotal = order.reduce(
+      (total, product) => product.precio * product.quantity + total,
+      0
+    );
+    setTotal(updatedTotal);
+  }, [order]);
 
-  const getCategories = async ()=> {
+  const getCategories = async () => {
     try {
-      const {data} = (await clientAxios.get(`/api/categories`)).data
+      const { data } = (await clientAxios.get(`/api/categories`)).data;
       setCategories(data);
-      setCurrentCategory(data[0])
+      setCurrentCategory(data[0]);
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
-  useEffect(()=>{
-    getCategories()
-  },[])
+  useEffect(() => {
+    getCategories();
+  }, []);
 
   const handleClickCategory = (id) => {
     const category = categorias.filter((category) => category.id === id)[0];
@@ -57,15 +60,35 @@ const CoffeProvider = ({ children }) => {
     }
   };
 
-  const handleDeleteOrder = id => {
-    setOrder(order.filter(o => o.id !== id))
-    toast.warn('Producto eliminado')
-  }
+  const handleDeleteOrder = (id) => {
+    setOrder(order.filter((o) => o.id !== id));
+    toast.warn("Producto eliminado");
+  };
 
   const handleEditQuantity = (id) => {
     const updatedProduct = order.filter((o) => o.id === id)[0];
     setProduct(updatedProduct);
-    setModal(!modal)
+    setModal(!modal);
+  };
+
+  const handleSubmitNewOrder = async () => {
+    const token = localStorage.getItem("AUTH_TOKEN");
+
+    try {
+      await clientAxios.post(
+        "/api/orders",
+        { 
+          total
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+    } catch (error) {
+      console.log(error.response.data.errors);
+    }
   };
 
   return (
@@ -83,7 +106,8 @@ const CoffeProvider = ({ children }) => {
         handleAddOrder,
         handleEditQuantity,
         handleDeleteOrder,
-        total
+        total,
+        handleSubmitNewOrder,
       }}
     >
       {children}
