@@ -34,9 +34,31 @@ export const useAuth = ({ middleware, url }) => {
         }
     }
 
-    const register = () => { }
+    const register = async (datos, setErrors) => {
+        try {
+            const { data } = await clientAxios.post("/api/register", datos);
+            localStorage.setItem("AUTH_TOKEN", data.token);
+            setErrors([])
+            await mutate()
+            setErrors([]);
+        } catch (error) {
+            setErrors(Object.values(error.response.data.errors));
+        }
+    }
 
-    const logout = () => { }
+    const logout = async () => {
+        try {
+            await clientAxios.post('/api/logout', null, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            localStorage.removeItem('AUTH_TOKEN')
+            await mutate(undefined)
+        } catch (error) {
+            throw Error(error?.response?.data?.errors)
+        }
+    }
 
     console.log(user, error);
 
@@ -45,7 +67,7 @@ export const useAuth = ({ middleware, url }) => {
             navigate('/')
         }
 
-        if(middleware === 'auth' && error){
+        if (middleware === 'auth' && error) {
             navigate('/auth/login')
         }
 
@@ -58,7 +80,7 @@ export const useAuth = ({ middleware, url }) => {
         login,
         register,
         logout,
-        user, 
+        user,
         error
     }
 }

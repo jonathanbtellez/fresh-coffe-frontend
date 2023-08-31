@@ -3,12 +3,15 @@ import { Link } from "react-router-dom";
 import clientAxios from "../../config/axios";
 
 import Alert from "../../components/Alert";
+import { useAuth } from "../../hooks/useAuth";
 
 export default function Register() {
   const nameRef = createRef();
   const emailRef = createRef();
   const passwordRef = createRef();
   const passwordConfirmationRef = createRef();
+
+  const {register} = useAuth({middleware: 'guest', url: '/'})
 
   const [errors, setErrors] = useState([]);
 
@@ -22,13 +25,7 @@ export default function Register() {
       password_confirmation: passwordConfirmationRef.current.value,
     };
 
-    try {
-      const { data } = await clientAxios.post("/api/register", datos);
-      console.log(data.token);
-      setErrors([]);
-    } catch (error) {
-      setErrors(Object.values(error.response.data.errors));
-    }
+    register(datos, setErrors)
   };
 
   return (
