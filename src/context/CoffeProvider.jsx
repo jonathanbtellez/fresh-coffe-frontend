@@ -71,14 +71,20 @@ const CoffeProvider = ({ children }) => {
     setModal(!modal);
   };
 
-  const handleSubmitNewOrder = async () => {
+  const handleSubmitNewOrder = async (logout) => {
     const token = localStorage.getItem("AUTH_TOKEN");
 
     try {
-      await clientAxios.post(
+      const { data } = await clientAxios.post(
         "/api/orders",
-        { 
-          total
+        {
+          total,
+          products: order.map((o) => {
+            return {
+              id: o.id,
+              quantity: o.quantity,
+            };
+          }),
         },
         {
           headers: {
@@ -86,6 +92,15 @@ const CoffeProvider = ({ children }) => {
           },
         }
       );
+      toast.success(data.message);
+      setTimeout(() => {
+        setOrder([]);
+      }, 1000);
+
+      setTimeout(() => {
+        localStorage.removeItem("AUTH_TOKEN");
+        logout();
+      }, 1000);
     } catch (error) {
       console.log(error.response.data.errors);
     }

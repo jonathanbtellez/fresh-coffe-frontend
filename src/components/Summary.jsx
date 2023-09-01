@@ -1,15 +1,16 @@
 import { moneyFormat } from "../helpers";
 import useCoffe from "../hooks/useCoffe";
 import SumaryOrder from "./SumaryOrder";
+import { useAuth } from "../hooks/useAuth";
 
 export default function Summary() {
   const { order, total, handleSubmitNewOrder } = useCoffe();
-
+  const { logout } = useAuth({});
   const checkOrder = () => order.length === 0;
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    handleSubmitNewOrder();
+    handleSubmitNewOrder(logout);
   };
   return (
     <aside className="md:w-72 h-screen overflow-y-scroll p-5">
