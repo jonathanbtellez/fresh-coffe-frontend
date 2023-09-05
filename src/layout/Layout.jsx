@@ -2,13 +2,13 @@
 import { Outlet } from "react-router-dom";
 
 import Modal from "react-modal";
-import {ToastContainer} from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import Sidebar from "../components/SideBar";
 import Summary from "../components/Summary";
 import useCoffe from "../hooks/useCoffe";
-import {useAuth} from '../hooks/useAuth';
+import { useAuth } from "../hooks/useAuth";
 
 import ModalProduct from "../components/ModalProduct";
 
@@ -25,11 +25,9 @@ const customStyles = {
 
 Modal.setAppElement("#root");
 
-
 export default function Layout() {
-  const {user, error} = useAuth({middleware: 'auth'})
+  useAuth({ middleware: "auth" });
   const { modal } = useCoffe();
-  console.log(user, error);
   return (
     <>
       <div className="md:flex">

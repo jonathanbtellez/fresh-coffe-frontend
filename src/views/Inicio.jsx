@@ -7,15 +7,21 @@ import clientAxios from "../config/axios";
 export default function Inicio() {
   const { currentCategory } = useCoffe();
 
-  const fetcher = () => clientAxios("api/products").then((data) => data.data);
+  const token = localStorage.getItem("AUTH_TOKEN");
+  const fetcher = () =>
+    clientAxios("api/products", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }).then((data) => data.data);
 
   const { data, error, isLoading } = useSWR("api/products", fetcher, {
-    refreshInterval: 1000
+    refreshInterval: 1000,
   });
 
   console.log(error);
 
-  if (isLoading) 
+  if (isLoading)
     return (
       <div className="h-screen flex items-center justify-center">
         <RotatingLines
@@ -40,9 +46,9 @@ export default function Inicio() {
           Elige y personaliza tu pedido a continuacion
         </p>
       </div>
-      <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
         {listProducts.map((product) => (
-          <Products key={product.id} product={product} />
+          <Products key={product.id} product={product} addButton={true} />
         ))}
       </div>
     </div>
